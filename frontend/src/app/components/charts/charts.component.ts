@@ -1,7 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as d3 from 'd3'
-import { combineLatest, timer } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators'
 import { stocksNames } from 'src/app/constants/charts.const';
 import { DataForD3, Stock } from 'src/app/interfaces/charts.interface';
@@ -36,16 +36,7 @@ export class ChartsComponent implements AfterViewInit {
     ).subscribe(
       (stocks: Array<DataForD3[]>) => {
         this.createCharts(stocks);
-        this.setRealoader();
       }
-    )
-  }
-
-  setRealoader() {
-    timer(5*60*1000).pipe(
-      untilDestroyed(this)
-    ).subscribe(
-      () => location.reload()
     )
   }
 

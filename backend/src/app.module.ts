@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { CouchDBService } from './services/couchdb.service';
 import { ConnectionService } from './services/connection.service';
 import { StockService } from './services/stock.service';
+import { UpdateService } from './services/update.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { StockService } from './services/stock.service';
     ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, CouchDBService, ConnectionService, StockService],
+  providers: [AppService, CouchDBService, ConnectionService, StockService, UpdateService],
 })
 export class AppModule {}

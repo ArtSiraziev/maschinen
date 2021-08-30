@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { combineLatest, map, switchMap, take } from 'rxjs';
+import { map } from 'rxjs';
 import { CouchDBService } from './services/couchdb.service';
-import { StockService } from './services/stock.service';
 import { stock1, stock2, stock3 } from './models/stock.const';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { UpdateService } from './services/update.service';
 
 @Injectable()
 export class AppService {
 
   constructor(
     private readonly couchDBService: CouchDBService,
-    private readonly stockService: StockService,
+    private readonly updateService: UpdateService,
     private readonly httpService: HttpService,
   ) { }
   
@@ -27,7 +26,7 @@ export class AppService {
       .then( (value) => value.subscribe() )
       .then( () => this.insertData(stock))
       .catch((error) => console.log(error) )
-      .finally(() => this.updateDB());
+      .finally(() => this.updateService.updateDB());
   }
 
   insertData({ name, url }): void {
@@ -46,22 +45,5 @@ export class AppService {
         value ? this.couchDBService.updateDocument(dbName, data) : this.couchDBService.insertDocument(dbName, data)
       }
     )
-  }
-
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  updateDB() {
-    combineLatest([
-      this.getNewData(stock1),
-      this.getNewData(stock2),
-      this.getNewData(stock3)
-    ]).pipe(take(1)).subscribe();
-  }
-
-  getNewData({ name, url }) {
-    return this.stockService.getStockApiData(url)
-      .pipe(
-        map( ({ data }) => this.couchDBService.createDocumentData(data)),
-        switchMap((data) => this.couchDBService.updateDocument(name, data))
-      )
   }
 }
