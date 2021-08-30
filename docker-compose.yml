@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - '80:80'
+    environment:
+      - NODE_ENV=production
+  dev:
+    container_name: nestjs_api_dev
+    image: nestjs-api-dev:1.0.0
+    environment:
+      - COUCHDB_URL=maschinen_couchdb_1:5984
+    build:
+      context: ./backend
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
+    ports:
+      - 3001:3000
+      - 9239:9229
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  backend:
+    container_name: backend
+    image: nestjs-api:1.0.0
+    environment:
+      - COUCHDB_URL=maschinen_couchdb_1:5984
+    build:
+      context: ./backend
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 3000:3000
+      - 9229:9229
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  couchdb:
+    image: docker.io/bitnami/couchdb:3
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+    ports:
+      - '5984:5984'
+      - '4369:4369'
+      - '9100:9100'
+    volumes:
+      - couchdb_data:/bitnami/couchdb
+      - ./couchdb/10-custom.ini:/opt/bitnami/couchdb/etc/local.d/10-custom.ini
+
+volumes:
+  couchdb_data:
+    driver: local
