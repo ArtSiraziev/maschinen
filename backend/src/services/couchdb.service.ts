@@ -1,4 +1,3 @@
-import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { ConnectionService } from './connection.service';
