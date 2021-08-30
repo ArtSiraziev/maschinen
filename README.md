@@ -5,7 +5,8 @@ To start project locally insert command:
  docker-compose -f ./docker-compose.yml up --build
 
 
-Frontend could be launched at http://localhost
+Frontend could be launched at http://localhost 
+
 CouchDB Interface could be opened at http://localhost:5984/_utils/ login: admin, password: admin
 
 Note:
