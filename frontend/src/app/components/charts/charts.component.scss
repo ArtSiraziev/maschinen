@@ -68,3 +68,30 @@ text.label {
 text.source {
   font-size: 10px;
 }
+
+.red-square {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+}
+
+.blue-square {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: blue;
+}
+
+.note {
+  display: inline;
+  height: 15px;
+}
+
+.myCircle:hover {
+  stroke: black;
+}
+
+.container {
+  position: relative;
+}

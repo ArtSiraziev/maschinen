@@ -1,6 +1,7 @@
+import { from } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as PouchDB from 'pouchdb-browser';
-PouchDB.debug.enable('*')
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,21 @@ export class PouchDBService {
   getStocks(dbName: string) {
     const db = new PouchDB(`http://localhost:5984/${dbName}`);
 
-    db.info().then(function (info) {
-      console.log(info);
-    })
+    const localDB = new PouchDB(dbName);
 
-    return db.get('stock')
+    return from(db.get('stock')).pipe(
+      tap((stock) => {
+        localDB.get('_local/chartData').then((doc) => localDB.remove(doc)).then(
+          () => localDB.put({
+          _id: '_local/chartData',
+          stock
+          })
+        );
+      }),
+      catchError(() => {
+        console.log(localDB.get('_local/chartData'))
+        return from(localDB.get('_local/chartData')).pipe(map((data: any) => data.stock));
+      })
+    )
   }
 }

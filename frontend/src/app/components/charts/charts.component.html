@@ -1,18 +1,21 @@
-<div class="my_dataviz_1">
+<div class="my_dataviz_1 container">
   <div *ngIf="stocks[0]">
     <h2>{{stocks[0].title}}</h2>
-    <span>Current Value: {{stocks[0].currentValue}}</span>
+    <span><strong>Current Value:</strong> {{stocks[0].currentValue}}| <strong>Maximum Value(last 5 minutes):</strong> {{stocks[0].max}}| <strong>Minimum Value(last 5 minutes):</strong> {{stocks[0].min}}</span>
   </div>
 </div>
-<div class="my_dataviz_2">
+<div class="my_dataviz_2 container">
   <div *ngIf="stocks[1]">
     <h2>{{stocks[1].title}}</h2>
-    <span>Current Value: {{stocks[1].currentValue}}</span>
+    <span><strong>Current Value:</strong> {{stocks[1].currentValue}}| <strong>Maximum Value(last 5 minutes):</strong> {{stocks[1].max}}| <strong>Minimum Value(last 5 minutes):</strong> {{stocks[1].min}}</span>
   </div>
 </div>
-<div class="my_dataviz_3">
+<div class="my_dataviz_3 container">
   <div *ngIf="stocks[2]">
     <h2>{{stocks[2].title}}</h2>
-    <span>Current Value: {{stocks[2].currentValue}}</span>
+    <span><strong>Current Value:</strong> {{stocks[2].currentValue}}| <strong>Maximum Value(last 5 minutes):</strong> {{stocks[2].max}}| <strong>Minimum Value(last 5 minutes):</strong> {{stocks[2].min}}</span>
   </div>
 </div>
+
+<small class="note"><div class="red-square"></div> - red line is maximum value at each 5 minutes interval</small>
+<small class="note"><div class="blue-square"></div> - blue line is minimum value at each 5 minutes interval</small>
