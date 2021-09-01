@@ -81,7 +81,7 @@ export class D3Service {
       .append('path')
       .datum(data)
       .attr('fill', 'none')
-      .attr('stroke', 'red')
+      .attr('stroke', property==='max' ? 'red' : 'blue')
       .attr('stroke-width', 1.5)
       .attr(
         'd',
