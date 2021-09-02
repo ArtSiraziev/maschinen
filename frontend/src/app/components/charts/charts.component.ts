@@ -1,7 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as d3 from 'd3'
-import { combineLatest, interval } from 'rxjs';
+import { combineLatest, interval, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators'
 import { stocksNames } from 'src/app/constants/charts.const';
 import { DataForD3, Stock } from 'src/app/interfaces/charts.interface';
@@ -17,6 +17,7 @@ import { D3Service } from './../../services/d3.service';
 export class ChartsComponent implements AfterViewInit {
 
   public stocks: Array<{title: string; currentValue: number, min: number, max: number}> = [];
+  private inervalForRefresh: Subscription;
 
   constructor(private readonly pouchService: PouchDBService, private readonly d3Service: D3Service) { }
 
@@ -25,7 +26,8 @@ export class ChartsComponent implements AfterViewInit {
   }
 
   setInterval() {
-    interval(5*60*1000).pipe(
+    if(this.inervalForRefresh) return
+    this.inervalForRefresh = interval(5*60*1000).pipe(
       untilDestroyed(this)
     ).subscribe(
       () => this.refreshCharts()
@@ -34,29 +36,13 @@ export class ChartsComponent implements AfterViewInit {
 
   refreshCharts(): void {
     this.clearCharts();
-    this.getAnother();
+    this.getData();
   }
 
   clearCharts(): void {
     d3.select(`.${stocksNames[0]}`).remove();
     d3.select(`.${stocksNames[1]}`).remove();
     d3.select(`.${stocksNames[2]}`).remove();
-  }
-
-  getAnother() {
-    combineLatest([
-      this.pouchService.getStocks(stocksNames[0]),
-      this.pouchService.getStocks(stocksNames[1]),
-      this.pouchService.getStocks(stocksNames[2])
-    ]).pipe(
-      tap((stocks) => this.handleStocksForMetadata(stocks as any)),
-      map((stocks) => this.d3Service.handleStocksForD3(stocks as any)),
-      untilDestroyed(this)
-    ).subscribe(
-      (stocks: Array<DataForD3[]>) => {
-        this.createCharts(stocks);
-      }
-    )
   }
 
   getData() {
