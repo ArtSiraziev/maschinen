@@ -17,7 +17,7 @@ import { D3Service } from './../../services/d3.service';
 export class ChartsComponent implements AfterViewInit {
 
   public stocks: Array<{title: string; currentValue: number, min: number, max: number}> = [];
-  private inervalForRefresh: Subscription;
+  private inervalForRefresh!: Subscription;
 
   constructor(private readonly pouchService: PouchDBService, private readonly d3Service: D3Service) { }
 
